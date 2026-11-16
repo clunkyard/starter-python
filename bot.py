@@ -56,7 +56,7 @@
 #   drive.forces(thrust strafe lift yaw_torque pitch_torque roll_torque brake)
 #   gun.aim(heading pitch) gun.fire(power) scanner.set(heading arc pitch)
 #   scanner.power(on) tracker.configure(smoothing forget_ticks cue_ticks)
-#   status.set(text value) raw.extra(json)
+#   status.set(text value) debug.log(line) raw.extra(json)
 # Every control argument is optional; a second call keeps what the first
 # set. Absent facts are your language's none. Names are snake_case here;
 # your language cases them its own way. Angles are degrees from the +x
@@ -147,6 +147,8 @@ class Starter(cy.Robot):
             on_target = abs(cy.angles.angle_diff(heading, now.heading)) < 3 and abs(pitch - now.pitch) < 3
             if ready and on_target and gun.can_fire(power, 10):
                 gun.fire(power)
+            # A line for your trace, which only you see: uncomment to follow the aim.
+            # self.debug.log(f"range {target.range:.0f} aim off {cy.angles.angle_diff(heading, now.heading):.1f}")
             self.status.set("TRACK" if ready else "NARROW", target.range)
         elif last_seen is not None and tick - last_seen <= REACQUIRE:
             # Lost it: look again where it was last seen, widening the beam, before searching.
